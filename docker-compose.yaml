@@ -1,38 +1,56 @@
 services:
   db1:
     container_name: db1
-    image: mariadb
+    image: mariadb:11.5.2
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: adminpass
+      REPLICATION_PASSWORD: 'adminpass'
+      GALERA: 'On'
+      NODE_NAME: db1
+      CLUSTER_NAME: maria_cluster
+      CLUSTER_ADDRESS: gcomm://
+      TZ: 'America/Miami'
     ports:
       - "3306:3306/tcp"
     volumes:
-      - "./mysql:/var/lib/mysql"
+      - "./db1:/var/lib/mysql"
     extra_hosts:
       - "host.docker.internal:host-gateway"
   db2:
     container_name: db2
-    image: mariadb
+    image: mariadb:11.5.2
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: adminpass
+      REPLICATION_PASSWORD: 'adminpass'
+      GALERA: 'On'
+      NODE_NAME: db1
+      CLUSTER_NAME: maria_cluster
+      CLUSTER_ADDRESS: gcomm://
+      TZ: 'America/Miami'
     ports:
       - "3307:3306/tcp"
     volumes:
-      - "./mysql2:/var/lib/mysql"
+      - "./db2:/var/lib/mysql"
     extra_hosts:
       - "host.docker.internal:host-gateway"
   db3:
     container_name: db3
-    image: mariadb
+    image: mariadb:11.5.2
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: adminpass
+      REPLICATION_PASSWORD: 'adminpass'
+      GALERA: 'On'
+      NODE_NAME: db1
+      CLUSTER_NAME: maria_cluster
+      CLUSTER_ADDRESS: gcomm://
+      TZ: 'America/Miami'
     ports:
       - "3308:3306/tcp"
     volumes:
-      - "./mysql3:/var/lib/mysql"
+      - "./db3:/var/lib/mysql"
     extra_hosts:
       - "host.docker.internal:host-gateway"
   open-webui:
