@@ -8,7 +8,7 @@ services:
       REPLICATION_PASSWORD: 'adminpass'
       GALERA: 'On'
       NODE_NAME: db1
-      CLUSTER_NAME: maria_cluster
+      CLUSTER_NAME: journeyman
       CLUSTER_ADDRESS: gcomm://
       TZ: 'America/Miami'
     ports:
@@ -17,17 +17,33 @@ services:
       - "./db1:/var/lib/mysql"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    command:
+      --wait_timeout=28800
+      --character-set-server=utf8
+      --collation-server=utf8_general_ci
+      --max-allowed-packet=512M
+      --net-buffer-length=5048576
+      --wsrep-new-cluster
+    stdin_open: true
+    tty: true
+    privileged: true
+    ulimits:
+      nofile:
+        soft: 600000
+        hard: 640000
   db2:
     container_name: db2
     image: mariadb:11.5.2
     restart: always
+    links:
+      - db1
     environment:
       MARIADB_ROOT_PASSWORD: adminpass
       REPLICATION_PASSWORD: 'adminpass'
       GALERA: 'On'
-      NODE_NAME: db1
-      CLUSTER_NAME: maria_cluster
-      CLUSTER_ADDRESS: gcomm://
+      NODE_NAME: db2
+      CLUSTER_NAME: journeyman
+      CLUSTER_ADDRESS: gcomm://db1
       TZ: 'America/Miami'
     ports:
       - "3307:3306/tcp"
@@ -35,17 +51,34 @@ services:
       - "./db2:/var/lib/mysql"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    command:
+      --wait_timeout=28800
+      --character-set-server=utf8
+      --collation-server=utf8_general_ci
+      --max-allowed-packet=512M
+      --net-buffer-length=5048576
+    stdin_open: true
+    tty: true
+    privileged: true
+    depends_on:
+      - db1
+    ulimits:
+      nofile:
+        soft: 600000
+        hard: 640000
   db3:
     container_name: db3
     image: mariadb:11.5.2
     restart: always
+    links:
+      - db1
     environment:
       MARIADB_ROOT_PASSWORD: adminpass
       REPLICATION_PASSWORD: 'adminpass'
       GALERA: 'On'
-      NODE_NAME: db1
-      CLUSTER_NAME: maria_cluster
-      CLUSTER_ADDRESS: gcomm://
+      NODE_NAME: db2
+      CLUSTER_NAME: journeyman
+      CLUSTER_ADDRESS: gcomm://db1
       TZ: 'America/Miami'
     ports:
       - "3308:3306/tcp"
@@ -53,6 +86,18 @@ services:
       - "./db3:/var/lib/mysql"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    command:
+      --wait_timeout=28800
+      --character-set-server=utf8
+      --collation-server=utf8_general_ci
+      --max-allowed-packet=512M
+      --net-buffer-length=5048576
+    stdin_open: true
+    tty: true
+    privileged: true
+    depends_on:
+      - db1
+      - db2
   open-webui:
     build:
       context: .
