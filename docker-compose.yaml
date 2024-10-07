@@ -1,0 +1,58 @@
+services:
+  db1:
+    container_name: db1
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: adminpass
+    ports:
+      - "3306:3306/tcp"
+    volumes:
+      - "./mysql:/var/lib/mysql"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  db2:
+    container_name: db2
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: adminpass
+    ports:
+      - "3307:3306/tcp"
+    volumes:
+      - "./mysql2:/var/lib/mysql"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  db3:
+    container_name: db3
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: adminpass
+    ports:
+      - "3308:3306/tcp"
+    volumes:
+      - "./mysql3:/var/lib/mysql"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  open-webui:
+    build:
+      context: .
+      args:
+        OLLAMA_BASE_URL: '/ollama'
+      dockerfile: Dockerfile
+    image: "ghcr.io/open-webui/open-webui:latest"
+    container_name: "open-webui"
+    volumes:
+      - "open-webui:/app/backend/data"
+    ports:
+      - "3000:8080"
+    environment:
+      - 'OLLAMA_BASE_URL=http://host.docker.internal:11434'
+      - 'WEBUI_SECRET_KEY='
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  open-webui: {}
