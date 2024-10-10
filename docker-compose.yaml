@@ -116,6 +116,49 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
+  doris-fe:
+    image: revhelix/doris.fe:2.0.15
+    container_name: doris-fe
+    ports:
+      - "8030:8030" # Web UI
+      - "9010:9010" # FE RPC
+      - "9020:9020" # FE MySQL
+    environment:
+      - FE_PRIORITY_NETWORKS=127.0.0.1/8
+      - FE_SERVERS=fe1:127.0.0.1:9010
+      - FE_ID=1
+    volumes:
+      - ./doris/doris-meta:/doris-meta
+      - ./doris/data/fe-01/doris-meta:/opt/apache-doris/fe/doris-meta
+      - ./doris/data/fe-01/log:/opt/apache-doris/fe/log
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+#  doris-be:
+#    image: revhelix/doris.be:2.0.15
+#    container_name: doris-be
+#    ports:
+#      - "9050:9050" # BE Heartbeat
+#      - "9060:9060" # BE RPC
+#      - "8040:8040" # BE Web UI
+#    environment:
+#      - BE_PRIORITY_NETWORKS=127.0.0.1/8
+#    volumes:
+#      - ./doris/doris-storage:/doris-storage
+#      - ./doris/data/be/storage:/opt/apache-doris/be/storage
+#      - ./doris/data/be/script:/docker-entrypoint-initdb.d
+#      - ./doris/data/be/log:/opt/apache-doris/be/log
+#    depends_on:
+#      - doris-fe
+#  doris-broker:
+#    image: revhelix/doris.broker:2.0.15
+#    container_name: doris-broker
+#    ports:
+#      - "8000:8000" # Broker Service
 
 volumes:
   open-webui: {}
+networks:
+  doris_net:
+    ipam:
+      config:
+        - subnet: 172.20.80.0/24
