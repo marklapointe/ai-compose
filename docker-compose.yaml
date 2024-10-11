@@ -25,7 +25,7 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -35,6 +35,7 @@ services:
       - "3030:9030"
     volumes:
        - ./data/fe0_data:/opt/starrocks/fe/meta
+       - ./starrocks:/overlay
   starrocks-fe-1:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
@@ -44,7 +45,7 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -54,6 +55,7 @@ services:
       - "3031:9030"
     volumes:
        - ./data/fe1_data:/opt/starrocks/fe/meta
+       - ./starrocks:/overlay
   starrocks-fe-2:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
@@ -63,7 +65,7 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -73,6 +75,7 @@ services:
       - "3032:9030"
     volumes:
        - ./data/fe2_data:/opt/starrocks/fe/meta
+       - ./starrocks:/overlay
   starrocks-fe-3:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
@@ -82,7 +85,7 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -92,7 +95,7 @@ services:
       - "3033:9030"
     volumes:
        - ./data/fe3_data:/opt/starrocks/fe/meta
-
+       - ./starrocks:/overlay
   starrocks-be-0:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -102,7 +105,7 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -111,6 +114,7 @@ services:
       - starrocks-fe-1
     volumes:
       - ./data/be0_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-1:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -120,15 +124,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be1_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-2:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -138,15 +145,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be2_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-3:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -156,15 +166,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be3_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-4:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -174,15 +187,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be4_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-5:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -192,15 +208,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be5_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-6:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -210,15 +229,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be6_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-7:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -228,15 +250,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be7_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-8:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -246,15 +271,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be8_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-9:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -264,15 +292,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be9_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-10:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -282,15 +313,18 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be10_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
   starrocks-be-11:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -300,12 +334,15 @@ services:
       - /bin/bash
       - -c
       - |
-        /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
       - starrocks-fe-0
       - starrocks-fe-1
+      - starrocks-fe-2
+      - starrocks-fe-3
     volumes:
       - ./data/be11_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
