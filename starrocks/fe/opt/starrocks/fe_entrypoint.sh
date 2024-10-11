@@ -17,7 +17,7 @@ PROBE_LEADER_POD0_TIMEOUT=30 # at most 15 attempts, no less than the times neede
 PROBE_LEADER_PODX_TIMEOUT=120 # at most 60 attempts
 
 # myself as IP or FQDN
-MYSELF=
+MYSELF=FQDN
 
 STARROCKS_ROOT=${STARROCKS_ROOT:-"/opt/starrocks"}
 STARROCKS_HOME=${STARROCKS_ROOT}/fe
@@ -108,7 +108,7 @@ probe_leader_for_pod0()
             fi
             log_stderr "No leader yet, has_member: $has_member ..."
         else
-            log_stderr "FE service $svc:$QUERY_PORT is not alive yet!"
+            log_stderr "probe_leader_for_pod0: FE service $svc:$QUERY_PORT is not alive yet!"
         fi
 
         # no leader yet, check if needs timeout and quit
@@ -155,7 +155,7 @@ probe_leader_for_podX()
             # no leader yet, check if needs timeout and quit
             log_stderr "No leader yet ..."
         else
-            log_stderr "FE service $svc:$QUERY_PORT is not alive yet!"
+            log_stderr "probe_leader_for_podX: FE service $svc:$QUERY_PORT is not alive yet!"
         fi
 
         local now=`date +%s`
