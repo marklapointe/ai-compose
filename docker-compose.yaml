@@ -1,104 +1,6 @@
 services:
-  db1:
-    container_name: db1
-    image: mariadb:11.5.2
-    restart: always
-    environment:
-      MARIADB_ROOT_PASSWORD: adminpass
-      REPLICATION_PASSWORD: 'adminpass'
-      GALERA: 'On'
-      NODE_NAME: db1
-      CLUSTER_NAME: journeyman
-      CLUSTER_ADDRESS: gcomm://
-      TZ: 'America/Miami'
-    ports:
-      - "3306:3306/tcp"
-    volumes:
-      - "./db1:/var/lib/mysql"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command:
-      --wait_timeout=28800
-      --character-set-server=utf8
-      --collation-server=utf8_general_ci
-      --max-allowed-packet=512M
-      --net-buffer-length=5048576
-      --wsrep-new-cluster
-    stdin_open: true
-    tty: true
-    privileged: true
-    ulimits:
-      nofile:
-        soft: 600000
-        hard: 640000
-  db2:
-    container_name: db2
-    image: mariadb:11.5.2
-    restart: always
-    links:
-      - db1
-    environment:
-      MARIADB_ROOT_PASSWORD: adminpass
-      REPLICATION_PASSWORD: 'adminpass'
-      GALERA: 'On'
-      NODE_NAME: db2
-      CLUSTER_NAME: journeyman
-      CLUSTER_ADDRESS: gcomm://db1
-      TZ: 'America/Miami'
-    ports:
-      - "3307:3306/tcp"
-    volumes:
-      - "./db2:/var/lib/mysql"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command:
-      --wait_timeout=28800
-      --character-set-server=utf8
-      --collation-server=utf8_general_ci
-      --max-allowed-packet=512M
-      --net-buffer-length=5048576
-    stdin_open: true
-    tty: true
-    privileged: true
-    depends_on:
-      - db1
-    ulimits:
-      nofile:
-        soft: 600000
-        hard: 640000
-  db3:
-    container_name: db3
-    image: mariadb:11.5.2
-    restart: always
-    links:
-      - db1
-    environment:
-      MARIADB_ROOT_PASSWORD: adminpass
-      REPLICATION_PASSWORD: 'adminpass'
-      GALERA: 'On'
-      NODE_NAME: db2
-      CLUSTER_NAME: journeyman
-      CLUSTER_ADDRESS: gcomm://db1
-      TZ: 'America/Miami'
-    ports:
-      - "3308:3306/tcp"
-    volumes:
-      - "./db3:/var/lib/mysql"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command:
-      --wait_timeout=28800
-      --character-set-server=utf8
-      --collation-server=utf8_general_ci
-      --max-allowed-packet=512M
-      --net-buffer-length=5048576
-    stdin_open: true
-    tty: true
-    privileged: true
-    depends_on:
-      - db1
-      - db2
   open-webui:
+    network_mode: "host"
     build:
       context: .
       args:
@@ -116,182 +18,322 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
-  doris-fe:
-    image: revhelix/doris.fe:2.0.15
-    container_name: doris-fe
-    ports:
-      - "8030:8030" # Web UI
-      - "9010:9010" # FE RPC
-      - "9020:9020" # FE MySQL
+  starrocks-fe-0:
+    restart: unless-stopped
+    image: starrocks/fe-ubuntu:latest
+    hostname: starrocks-fe-0
+    container_name: starrocks-fe-0
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/fe_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
     environment:
-      - FE_PRIORITY_NETWORKS=127.0.0.1/8
-      - FE_SERVERS=fe1:127.0.0.1:9010
-      - FE_ID=1
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    ports:
+      - "1030:8030"
+      - "2020:9020"
+      - "3030:9030"
     volumes:
-      - ./doris/doris-meta:/doris-meta
-      - ./doris/data/fe-01/doris-meta:/opt/apache-doris/fe/doris-meta
-      - ./doris/data/fe-01/log:/opt/apache-doris/fe/log
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-#  doris-be:
-#    image: revhelix/doris.be:2.0.15
-#    container_name: doris-be
-#    ports:
-#      - "9050:9050" # BE Heartbeat
-#      - "9060:9060" # BE RPC
-#      - "8040:8040" # BE Web UI
-#    environment:
-#      - BE_PRIORITY_NETWORKS=127.0.0.1/8
-#    volumes:
-#      - ./doris/doris-storage:/doris-storage
-#      - ./doris/data/be/storage:/opt/apache-doris/be/storage
-#      - ./doris/data/be/script:/docker-entrypoint-initdb.d
-#      - ./doris/data/be/log:/opt/apache-doris/be/log
-#    depends_on:
-#      - doris-fe
-#  doris-broker:
-#    image: revhelix/doris.broker:2.0.15
-#    container_name: doris-broker
-#    ports:
-#      - "8000:8000" # Broker Service
+       - 1fe3be_fe0_data:/opt/starrocks/fe/meta
+  starrocks-fe-1:
+    restart: unless-stopped
+    image: starrocks/fe-ubuntu:latest
+    hostname: starrocks-fe-1
+    container_name: starrocks-fe-1
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/fe_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    ports:
+      - "1031:8030"
+      - "2021:9020"
+      - "3031:9030"
+    volumes:
+       - 1fe3be_fe1_data:/opt/starrocks/fe/meta
+  starrocks-fe-2:
+    restart: unless-stopped
+    image: starrocks/fe-ubuntu:latest
+    hostname: starrocks-fe-2
+    container_name: starrocks-fe-2
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/fe_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    ports:
+      - "1032:8030"
+      - "2022:9020"
+      - "3032:9030"
+    volumes:
+       - 1fe3be_fe2_data:/opt/starrocks/fe/meta
+  starrocks-fe-3:
+    restart: unless-stopped
+    image: starrocks/fe-ubuntu:latest
+    hostname: starrocks-fe-3
+    container_name: starrocks-fe-3
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/fe_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    ports:
+      - "1033:8030"
+      - "2023:9020"
+      - "3033:9030"
+    volumes:
+       - 1fe3be_fe3_data:/opt/starrocks/fe/meta
 
+  starrocks-be-0:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-0
+    container_name: starrocks-be-0
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be0_data:/opt/starrocks/be/storage
+
+  starrocks-be-1:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-1
+    container_name: starrocks-be-1
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be1_data:/opt/starrocks/be/storage
+
+  starrocks-be-2:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-2
+    container_name: starrocks-be-2
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be2_data:/opt/starrocks/be/storage
+  starrocks-be-3:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-3
+    container_name: starrocks-be-3
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be3_data:/opt/starrocks/be/storage
+
+  starrocks-be-4:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-4
+    container_name: starrocks-be-4
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be4_data:/opt/starrocks/be/storage
+
+  starrocks-be-5:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-5
+    container_name: starrocks-be-5
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be5_data:/opt/starrocks/be/storage
+  starrocks-be-6:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-6
+    container_name: starrocks-be-6
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be6_data:/opt/starrocks/be/storage
+
+  starrocks-be-7:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-7
+    container_name: starrocks-be-7
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be7_data:/opt/starrocks/be/storage
+
+  starrocks-be-8:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-8
+    container_name: starrocks-be-8
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be8_data:/opt/starrocks/be/storage
+  starrocks-be-9:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-9
+    container_name: starrocks-be-9
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be9_data:/opt/starrocks/be/storage
+
+  starrocks-be-10:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-10
+    container_name: starrocks-be-10
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be10_data:/opt/starrocks/be/storage
+
+  starrocks-be-11:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-11
+    container_name: starrocks-be-11
+    command:
+      - /bin/bash
+      - -c
+      - |
+        /opt/starrocks/be_entrypoint.sh starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-0
+      - starrocks-fe-1
+    volumes:
+      - 1fe3be_be11_data:/opt/starrocks/be/storage
 volumes:
   open-webui: {}
-networks:
-  doris_net:
-    ipam:
-      config:
-        - subnet: 172.20.80.0/24
-
-
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-#version: '3'
-#services:
-#  docker-fe-01:
-#    image: "apache/doris:2.0.0_alpha-fe-x86_64"
-#    container_name: "doris-fe-01"
-#    hostname: "fe-01"
-#    environment:
-#      - FE_SERVERS=fe1:172.20.80.2:9010,fe2:172.20.80.3:9010,fe3:172.20.80.4:9010
-#      - FE_ID=1
-#    ports:
-#      - 8031:8030
-#      - 9031:9030
-#    volumes:
-#      - /data/fe-01/doris-meta:/opt/apache-doris/fe/doris-meta
-#      - /data/fe-01/log:/opt/apache-doris/fe/log
-#    networks:
-#      doris_net:
-#        ipv4_address: 172.20.80.2
-#  docker-fe-02:
-#    image: "apache/doris:2.0.0_alpha-fe-x86_64"
-#    container_name: "doris-fe-02"
-#    hostname: "fe-02"
-#    environment:
-#      - FE_SERVERS=fe1:172.20.80.2:9010,fe2:172.20.80.3:9010,fe3:172.20.80.4:9010
-#      - FE_ID=2
-#    ports:
-#      - 8032:8030
-#      - 9032:9030
-#    volumes:
-#      - /data/fe-02/doris-meta:/opt/apache-doris/fe/doris-meta
-#      - /data/fe-02/log:/opt/apache-doris/fe/log
-#    networks:
-#      doris_net:
-#        ipv4_address: 172.20.80.3
-#  docker-fe-03:
-#    image: "apache/doris:2.0.0_alpha-fe-x86_64"
-#    container_name: "doris-fe-03"
-#    hostname: "fe-03"
-#    environment:
-#      - FE_SERVERS=fe1:172.20.80.2:9010,fe2:172.20.80.3:9010,fe3:172.20.80.4:9010
-#      - FE_ID=3
-#    ports:
-#      - 8033:8030
-#      - 9033:9030
-#    volumes:
-#      - /data/fe-03/doris-meta:/opt/apache-doris/fe/doris-meta
-#      - /data/fe-03/log:/opt/apache-doris/fe/log
-#    networks:
-#      doris_net:
-#        ipv4_address: 172.20.80.4
-#  docker-be-01:
-#    image: "apache/doris:2.0.0_alpha-be-x86_64"
-#    container_name: "doris-be-01"
-#    hostname: "be-01"
-#    depends_on:
-#      - docker-fe-01
-#      - docker-fe-02
-#      - docker-fe-03
-#    environment:
-#      - FE_SERVERS=fe1:172.20.80.2:9010,fe2:172.20.80.3:9010,fe3:172.20.80.4:9010
-#      - BE_ADDR=172.20.80.5:9050
-#    ports:
-#      - 8041:8040
-#    volumes:
-#      - /data/be-01/storage:/opt/apache-doris/be/storage
-#      - /data/be-01/script:/docker-entrypoint-initdb.d
-#      - /data/be-01/log:/opt/apache-doris/be/log
-#    networks:
-#      doris_net:
-#        ipv4_address: 172.20.80.5
-#  docker-be-02:
-#    image: "apache/doris:2.0.0_alpha-be-x86_64"
-#    container_name: "doris-be-02"
-#    hostname: "be-02"
-#    depends_on:
-#      - docker-fe-01
-#      - docker-fe-02
-#      - docker-fe-03
-#    environment:
-#      - FE_SERVERS=fe1:172.20.80.2:9010,fe2:172.20.80.3:9010,fe3:172.20.80.4:9010
-#      - BE_ADDR=172.20.80.6:9050
-#    ports:
-#      - 8042:8040
-#    volumes:
-#      - /data/be-02/storage:/opt/apache-doris/be/storage
-#      - /data/be-02/script:/docker-entrypoint-initdb.d
-#      - /data/be-02/log:/opt/apache-doris/be/log
-#    networks:
-#      doris_net:
-#        ipv4_address: 172.20.80.6
-#  docker-be-03:
-#    image: "apache/doris:2.0.0_alpha-be-x86_64"
-#    container_name: "doris-be-03"
-#    hostname: "be-03"
-#    depends_on:
-#      - docker-fe-01
-#      - docker-fe-02
-#      - docker-fe-03
-#    environment:
-#      - FE_SERVERS=fe1:172.20.80.2:9010,fe2:172.20.80.3:9010,fe3:172.20.80.4:9010
-#      - BE_ADDR=172.20.80.7:9050
-#    ports:
-#      - 8043:8040
-#    volumes:
-#      - /data/be-03/storage:/opt/apache-doris/be/storage
-#      - /data/be-03/script:/docker-entrypoint-initdb.d
-#      - /data/be-03/log:/opt/apache-doris/be/log
-#    networks:
-#      doris_net:
-#        ipv4_address: 172.20.80.7
-#networks:
-#  doris_net:
-#    ipam:
-#      config:
-#        - subnet: 172.20.80.0/24
+  1fe3be_fe0_data: {}
+  1fe3be_fe1_data: {}
+  1fe3be_fe2_data: { }
+  1fe3be_fe3_data: { }
+  1fe3be_be0_data: {}
+  1fe3be_be1_data: {}
+  1fe3be_be2_data: {}
+  1fe3be_be3_data: {}
+  1fe3be_be4_data: {}
+  1fe3be_be5_data: {}
+  1fe3be_be6_data: { }
+  1fe3be_be7_data: { }
+  1fe3be_be8_data: { }
+  1fe3be_be9_data: { }
+  1fe3be_be10_data: { }
+  1fe3be_be11_data: { }
