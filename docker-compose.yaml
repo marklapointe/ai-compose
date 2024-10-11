@@ -34,7 +34,7 @@ services:
       - "2020:9020"
       - "3030:9030"
     volumes:
-       - ./data/fe0_data:/opt/starrocks/fe/meta
+       - ./data/starrocks/fe00_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
   starrocks-fe-01:
     restart: unless-stopped
@@ -54,7 +54,7 @@ services:
       - "2021:9020"
       - "3031:9030"
     volumes:
-       - ./data/fe1_data:/opt/starrocks/fe/meta
+       - ./data/starrocks/fe01_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
   starrocks-fe-02:
     restart: unless-stopped
@@ -74,7 +74,7 @@ services:
       - "2022:9020"
       - "3032:9030"
     volumes:
-       - ./data/fe2_data:/opt/starrocks/fe/meta
+       - ./data/starrocks/fe02_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
   starrocks-fe-03:
     restart: unless-stopped
@@ -94,7 +94,7 @@ services:
       - "2023:9020"
       - "3033:9030"
     volumes:
-       - ./data/fe3_data:/opt/starrocks/fe/meta
+       - ./data/starrocks/fe03_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
   starrocks-be-00:
     restart: unless-stopped
@@ -113,7 +113,7 @@ services:
       - starrocks-fe-00
       - starrocks-fe-01
     volumes:
-      - ./data/be0_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be00_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-01:
     restart: unless-stopped
@@ -134,7 +134,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be1_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be01_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-02:
     restart: unless-stopped
@@ -155,7 +155,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be2_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be02_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-03:
     restart: unless-stopped
@@ -176,7 +176,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be3_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be03_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-04:
     restart: unless-stopped
@@ -197,7 +197,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be4_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be04_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-05:
     restart: unless-stopped
@@ -218,7 +218,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be5_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be05_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-06:
     restart: unless-stopped
@@ -239,7 +239,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be6_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be06_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-07:
     restart: unless-stopped
@@ -260,7 +260,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be7_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be07_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-08:
     restart: unless-stopped
@@ -281,7 +281,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be8_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be08_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-09:
     restart: unless-stopped
@@ -302,7 +302,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be9_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be09_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-10:
     restart: unless-stopped
@@ -323,7 +323,7 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be10_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be10_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
   starrocks-be-11:
     restart: unless-stopped
@@ -344,5 +344,5 @@ services:
       - starrocks-fe-02
       - starrocks-fe-03
     volumes:
-      - ./data/be11_data:/opt/starrocks/be/storage
+      - ./data/starrocks/be11_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
