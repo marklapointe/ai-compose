@@ -15,6 +15,15 @@ services:
       - 'WEBUI_SECRET_KEY='
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
     restart: unless-stopped
   starrocks-fe-00:
     restart: unless-stopped
@@ -36,6 +45,20 @@ services:
     volumes:
        - ./data/starrocks/fe00_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+#    networks:
+#      maclan70:
+#        ipv4_address: 192.168.27.130
   starrocks-fe-01:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
@@ -56,6 +79,17 @@ services:
     volumes:
        - ./data/starrocks/fe01_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-fe-02:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
@@ -76,6 +110,17 @@ services:
     volumes:
        - ./data/starrocks/fe02_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-fe-03:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
@@ -96,6 +141,17 @@ services:
     volumes:
        - ./data/starrocks/fe03_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-00:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -115,6 +171,17 @@ services:
     volumes:
       - ./data/starrocks/be00_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-01:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -136,6 +203,17 @@ services:
     volumes:
       - ./data/starrocks/be01_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-02:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -157,6 +235,17 @@ services:
     volumes:
       - ./data/starrocks/be02_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-03:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -178,6 +267,17 @@ services:
     volumes:
       - ./data/starrocks/be03_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-04:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -199,6 +299,17 @@ services:
     volumes:
       - ./data/starrocks/be04_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-05:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -220,6 +331,17 @@ services:
     volumes:
       - ./data/starrocks/be05_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-06:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -241,6 +363,17 @@ services:
     volumes:
       - ./data/starrocks/be06_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-07:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -262,6 +395,17 @@ services:
     volumes:
       - ./data/starrocks/be07_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-08:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -283,6 +427,17 @@ services:
     volumes:
       - ./data/starrocks/be08_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-09:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -304,6 +459,17 @@ services:
     volumes:
       - ./data/starrocks/be09_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-10:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -325,6 +491,17 @@ services:
     volumes:
       - ./data/starrocks/be10_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
   starrocks-be-11:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
@@ -346,3 +523,26 @@ services:
     volumes:
       - ./data/starrocks/be11_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+networks:
+  maclan70:
+    enable_ipv6: true
+    driver: macvlan
+#    driver_opts:
+#      parent: eno1.70
+    ipam:
+      config:
+        - subnet: 192.168.24.0/22
+          gateway: 192.168.24.1
+          ip_range: 192.168.27.0/24
+
