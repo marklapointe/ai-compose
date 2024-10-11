@@ -16,16 +16,16 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
-  starrocks-fe-0:
+  starrocks-fe-00:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
-    hostname: starrocks-fe-0
-    container_name: starrocks-fe-0
+    hostname: starrocks-fe-00
+    container_name: starrocks-fe-00
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -36,16 +36,16 @@ services:
     volumes:
        - ./data/fe0_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
-  starrocks-fe-1:
+  starrocks-fe-01:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
-    hostname: starrocks-fe-1
-    container_name: starrocks-fe-1
+    hostname: starrocks-fe-01
+    container_name: starrocks-fe-01
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -56,16 +56,16 @@ services:
     volumes:
        - ./data/fe1_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
-  starrocks-fe-2:
+  starrocks-fe-02:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
-    hostname: starrocks-fe-2
-    container_name: starrocks-fe-2
+    hostname: starrocks-fe-02
+    container_name: starrocks-fe-02
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -76,16 +76,16 @@ services:
     volumes:
        - ./data/fe2_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
-  starrocks-fe-3:
+  starrocks-fe-03:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
-    hostname: starrocks-fe-3
-    container_name: starrocks-fe-3
+    hostname: starrocks-fe-03
+    container_name: starrocks-fe-03
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/fe/* / && /opt/starrocks/fe_entrypoint.sh --host_type FQDN starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -96,211 +96,211 @@ services:
     volumes:
        - ./data/fe3_data:/opt/starrocks/fe/meta
        - ./starrocks:/overlay
-  starrocks-be-0:
+  starrocks-be-00:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-0
-    container_name: starrocks-be-0
+    hostname: starrocks-be-00
+    container_name: starrocks-be-00
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
+      - starrocks-fe-00
+      - starrocks-fe-01
     volumes:
       - ./data/be0_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-1:
+  starrocks-be-01:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-1
-    container_name: starrocks-be-1
+    hostname: starrocks-be-01
+    container_name: starrocks-be-01
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be1_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-2:
+  starrocks-be-02:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-2
-    container_name: starrocks-be-2
+    hostname: starrocks-be-02
+    container_name: starrocks-be-02
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be2_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-3:
+  starrocks-be-03:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-3
-    container_name: starrocks-be-3
+    hostname: starrocks-be-03
+    container_name: starrocks-be-03
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be3_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-4:
+  starrocks-be-04:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-4
-    container_name: starrocks-be-4
+    hostname: starrocks-be-04
+    container_name: starrocks-be-04
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be4_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-5:
+  starrocks-be-05:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-5
-    container_name: starrocks-be-5
+    hostname: starrocks-be-05
+    container_name: starrocks-be-05
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be5_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-6:
+  starrocks-be-06:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-6
-    container_name: starrocks-be-6
+    hostname: starrocks-be-06
+    container_name: starrocks-be-06
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be6_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-7:
+  starrocks-be-07:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-7
-    container_name: starrocks-be-7
+    hostname: starrocks-be-07
+    container_name: starrocks-be-07
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be7_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-8:
+  starrocks-be-08:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-8
-    container_name: starrocks-be-8
+    hostname: starrocks-be-08
+    container_name: starrocks-be-08
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be8_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
-  starrocks-be-9:
+  starrocks-be-09:
     restart: unless-stopped
     image: starrocks/be-ubuntu:latest
-    hostname: starrocks-be-9
-    container_name: starrocks-be-9
+    hostname: starrocks-be-09
+    container_name: starrocks-be-09
     command:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be9_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
@@ -313,15 +313,15 @@ services:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be10_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
@@ -334,15 +334,15 @@ services:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-0 starrocks-fe-1 starrocks-fe-2 starrocks-fe-3 )
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
     depends_on:
-      - starrocks-fe-0
-      - starrocks-fe-1
-      - starrocks-fe-2
-      - starrocks-fe-3
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/be11_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
