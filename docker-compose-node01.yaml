@@ -1,4 +1,30 @@
 services:
+  open-webui:
+    network_mode: "host"
+    build:
+      context: .
+      args:
+        OLLAMA_BASE_URL: '/ollama'
+      dockerfile: Dockerfile
+    image: "ghcr.io/open-webui/open-webui:latest"
+    container_name: "open-webui"
+    volumes:
+      - ./data/open-webui:/app/backend/data
+    environment:
+      - 'OLLAMA_BASE_URL=http://host.docker.internal:11434'
+      - 'WEBUI_SECRET_KEY='
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    restart: unless-stopped
   starrocks-fe-00:
     restart: unless-stopped
     image: starrocks/fe-ubuntu:latest
@@ -24,8 +50,8 @@ services:
       - "2600:1700:14e0:16a0:aaaa::1:9010:9010"
       - "2600:1700:14e0:16a0:aaaa::1:6090:6090"
     volumes:
-       - ./data/starrocks/fe00_data:/opt/starrocks/fe/meta
-       - ./starrocks:/overlay
+      - ./data/starrocks/fe00_data:/opt/starrocks/fe/meta
+      - ./starrocks:/overlay
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -60,8 +86,8 @@ services:
       - "2600:1700:14e0:16a0:aaaa::3:9010:9010"
       - "2600:1700:14e0:16a0:aaaa::3:6090:6090"
     volumes:
-       - ./data/starrocks/fe02_data:/opt/starrocks/fe/meta
-       - ./starrocks:/overlay
+      - ./data/starrocks/fe02_data:/opt/starrocks/fe/meta
+      - ./starrocks:/overlay
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -71,4 +97,221 @@ services:
       - 2001:4860:4860::8844
       - 2606:4700::1111
       - 2606:4700::1001
+  starrocks-be-00:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-00.iambsd.org
+    container_name: starrocks-be-00
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    volumes:
+      - ./data/starrocks/be00_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.150:9060:9060"
+      - "99.122.154.150:8040:8040"
+      - "99.122.154.150:9050:9050"
+      - "99.122.154.150:8060:8060"
+      - "99.122.154.150:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::5:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::5:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::5:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::5:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::5:9070:9070"
+  starrocks-be-02:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-02.iambsd.org
+    container_name: starrocks-be-02
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    volumes:
+      - ./data/starrocks/be02_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.152:9060:9060"
+      - "99.122.154.152:8040:8040"
+      - "99.122.154.152:9050:9050"
+      - "99.122.154.152:8060:8060"
+      - "99.122.154.152:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::7:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::7:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::7:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::7:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::7:9070:9070"
+  starrocks-be-04:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-04.iambsd.org
+    container_name: starrocks-be-04
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    volumes:
+      - ./data/starrocks/be04_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.154:9060:9060"
+      - "99.122.154.154:8040:8040"
+      - "99.122.154.154:9050:9050"
+      - "99.122.154.154:8060:8060"
+      - "99.122.154.154:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::9:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::9:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::9:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::9:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::9:9070:9070"
+  starrocks-be-06:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-06.iambsd.org
+    container_name: starrocks-be-06
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    volumes:
+      - ./data/starrocks/be06_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.156:9060:9060"
+      - "99.122.154.156:8040:8040"
+      - "99.122.154.156:9050:9050"
+      - "99.122.154.156:8060:8060"
+      - "99.122.154.156:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::11:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::11:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::11:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::11:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::11:9070:9070"
+  starrocks-be-08:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-08.iambsd.org
+    container_name: starrocks-be-08
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    volumes:
+      - ./data/starrocks/be08_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.158:9060:9060"
+      - "99.122.154.158:8040:8040"
+      - "99.122.154.158:9050:9050"
+      - "99.122.154.158:8060:8060"
+      - "99.122.154.158:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::13:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::13:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::13:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::13:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::13:9070:9070"
+  starrocks-be-10:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-10.iambsd.org
+    container_name: starrocks-be-10
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    volumes:
+      - ./data/starrocks/be10_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.160:9060:9060"
+      - "99.122.154.160:8040:8040"
+      - "99.122.154.160:9050:9050"
+      - "99.122.154.160:8060:8060"
+      - "99.122.154.160:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::15:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::15:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::15:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::15:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::15:9070:9070"
+
 
