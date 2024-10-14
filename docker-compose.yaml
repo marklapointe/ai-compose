@@ -189,6 +189,8 @@ services:
     depends_on:
       - starrocks-fe-00
       - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
     volumes:
       - ./data/starrocks/be00_data:/opt/starrocks/be/storage
       - ./starrocks:/overlay
