@@ -1,0 +1,28 @@
+services:
+  open-webui:
+    network_mode: "host"
+    build:
+      context: .
+      args:
+        OLLAMA_BASE_URL: '/ollama'
+      dockerfile: Dockerfile
+    image: "ghcr.io/open-webui/open-webui:latest"
+    container_name: "open-webui"
+    volumes:
+      - ./data/open-webui:/app/backend/data
+    environment:
+      - 'OLLAMA_BASE_URL=http://host.docker.internal:11434'
+      - 'WEBUI_SECRET_KEY='
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    restart: unless-stopped
+

@@ -1,0 +1,323 @@
+services:
+  starrocks-fe-01:
+    restart: unless-stopped
+    image: starrocks/fe-ubuntu:latest
+    hostname: starrocks-fe-01.iambsd.org
+    container_name: starrocks-fe-01
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/fe/* / && HOST_TYPE=FQDN /opt/starrocks/fe_entrypoint.sh starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    ports:
+      - "99.122.154.163:8030:8030"
+      - "99.122.154.163:9020:9020"
+      - "99.122.154.163:9030:9030"
+      - "99.122.154.163:9010:9010"
+      - "99.122.154.163:6090:6090"
+      - "2600:1700:14e0:16a0:aaaa::2:8030:8030"
+      - "2600:1700:14e0:16a0:aaaa::2:9020:9020"
+      - "2600:1700:14e0:16a0:aaaa::2:9030:9030"
+      - "2600:1700:14e0:16a0:aaaa::2:9010:9010"
+      - "2600:1700:14e0:16a0:aaaa::2:6090:6090"
+    volumes:
+       - ./data/starrocks/fe01_data:/opt/starrocks/fe/meta
+       - ./starrocks:/overlay
+    extra_hosts:
+      - "starrocks-fe-00X:192.168.27.130"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+  starrocks-fe-03:
+    restart: unless-stopped
+    image: starrocks/fe-ubuntu:latest
+    hostname: starrocks-fe-03.iambsd.org
+    container_name: starrocks-fe-03
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/fe/* / && HOST_TYPE=FQDN /opt/starrocks/fe_entrypoint.sh starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    ports:
+      - "99.122.154.165:8030:8030"
+      - "99.122.154.165:9020:9020"
+      - "99.122.154.165:9030:9030"
+      - "99.122.154.165:9010:9010"
+      - "99.122.154.165:6090:6090"
+      - "2600:1700:14e0:16a0:aaaa::4:8030:8030"
+      - "2600:1700:14e0:16a0:aaaa::4:9020:9020"
+      - "2600:1700:14e0:16a0:aaaa::4:9030:9030"
+      - "2600:1700:14e0:16a0:aaaa::4:9010:9010"
+      - "2600:1700:14e0:16a0:aaaa::4:6090:6090"
+    volumes:
+       - ./data/starrocks/fe03_data:/opt/starrocks/fe/meta
+       - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+  starrocks-be-01:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-01.iambsd.org
+    container_name: starrocks-be-01
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
+    volumes:
+      - ./data/starrocks/be01_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.151:9060:9060"
+      - "99.122.154.151:8040:8040"
+      - "99.122.154.151:9050:9050"
+      - "99.122.154.151:8060:8060"
+      - "99.122.154.151:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::6:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::6:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::6:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::6:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::6:9070:9070"
+  starrocks-be-03:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-03.iambsd.org
+    container_name: starrocks-be-03
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
+    volumes:
+      - ./data/starrocks/be03_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.153:9060:9060"
+      - "99.122.154.153:8040:8040"
+      - "99.122.154.153:9050:9050"
+      - "99.122.154.153:8060:8060"
+      - "99.122.154.153:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::8:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::8:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::8:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::8:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::8:9070:9070"
+  starrocks-be-05:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-05.iambsd.org
+    container_name: starrocks-be-05
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
+    volumes:
+      - ./data/starrocks/be05_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.155:9060:9060"
+      - "99.122.154.155:8040:8040"
+      - "99.122.154.155:9050:9050"
+      - "99.122.154.155:8060:8060"
+      - "99.122.154.155:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::10:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::10:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::10:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::10:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::10:9070:9070"
+  starrocks-be-07:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-07.iambsd.org
+    container_name: starrocks-be-07
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
+    volumes:
+      - ./data/starrocks/be07_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.157:9060:9060"
+      - "99.122.154.157:8040:8040"
+      - "99.122.154.157:9050:9050"
+      - "99.122.154.157:8060:8060"
+      - "99.122.154.157:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::12:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::12:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::12:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::12:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::12:9070:9070"
+  starrocks-be-09:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-09.iambsd.org
+    container_name: starrocks-be-09
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
+    volumes:
+      - ./data/starrocks/be09_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.159:9060:9060"
+      - "99.122.154.159:8040:8040"
+      - "99.122.154.159:9050:9050"
+      - "99.122.154.159:8060:8060"
+      - "99.122.154.159:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::14:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::14:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::14:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::14:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::14:9070:9070"
+  starrocks-be-11:
+    restart: unless-stopped
+    image: starrocks/be-ubuntu:latest
+    hostname: starrocks-be-11.iambsd.org
+    container_name: starrocks-be-11
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ( cp -R  /overlay/be/* / && /opt/starrocks/be_entrypoint.sh  starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org  )
+    environment:
+      - HOST_TYPE=FQDN
+      - TZ=America/Toronto
+    depends_on:
+      - starrocks-fe-00
+      - starrocks-fe-01
+      - starrocks-fe-02
+      - starrocks-fe-03
+    volumes:
+      - ./data/starrocks/be11_data:/opt/starrocks/be/storage
+      - ./starrocks:/overlay
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+      - 1.0.0.1
+      - 2001:4860:4860::8888
+      - 2001:4860:4860::8844
+      - 2606:4700::1111
+      - 2606:4700::1001
+    ports:
+      - "99.122.154.161:9060:9060"
+      - "99.122.154.161:8040:8040"
+      - "99.122.154.161:9050:9050"
+      - "99.122.154.161:8060:8060"
+      - "99.122.154.161:9070:9070"
+      - "2600:1700:14e0:16a0:aaaa::16:9060:9060"
+      - "2600:1700:14e0:16a0:aaaa::16:8040:8040"
+      - "2600:1700:14e0:16a0:aaaa::16:9050:9050"
+      - "2600:1700:14e0:16a0:aaaa::16:8060:8060"
+      - "2600:1700:14e0:16a0:aaaa::16:9070:9070"
+
+
