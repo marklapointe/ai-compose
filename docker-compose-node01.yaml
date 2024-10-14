@@ -34,7 +34,7 @@ services:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/fe/* / && HOST_TYPE=FQDN /opt/starrocks/fe_entrypoint.sh starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
+        ( cp -R  /overlay/fe/* / && HOST_TYPE=FQDN /opt/starrocks/fe_entrypoint.sh starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
@@ -70,7 +70,7 @@ services:
       - /bin/bash
       - -c
       - |
-        ( cp -R  /overlay/fe/* / && HOST_TYPE=FQDN /opt/starrocks/fe_entrypoint.sh starrocks-fe-00 starrocks-fe-01 starrocks-fe-02 starrocks-fe-03 )
+        ( cp -R  /overlay/fe/* / && HOST_TYPE=FQDN /opt/starrocks/fe_entrypoint.sh starrocks-fe-00.iambsd.org  starrocks-fe-01.iambsd.org  starrocks-fe-02.iambsd.org  starrocks-fe-03.iambsd.org )
     environment:
       - HOST_TYPE=FQDN
       - TZ=America/Toronto
